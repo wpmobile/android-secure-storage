@@ -17,6 +17,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
@@ -41,15 +42,12 @@ public final class SecureHelper {
 	private KeyStore keyStore = null;
 	private KeyGenerator keyGenerator = null;
 	private SecretKey secretKey = null;
-	private FileOutputStream fileOutputStream = null;
 	private Cipher cipher = null;
 	private byte[] ivSpec = null;
 	private Context context = null;
 
-	/* private static SecureHelper secHelper = null; */
-
 	/**
-	 * parameterized constructor.
+	 * Create a new instance of {@link SecureHelper}.
 	 * 
 	 * @param ctx
 	 *            :Context of calling activity.
@@ -63,7 +61,6 @@ public final class SecureHelper {
 			this.cipher = cipher;
 			keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -92,24 +89,13 @@ public final class SecureHelper {
 	}
 
 	/**
-	 * Create the instance of SecureHelper class if exist otherwise generate
-	 * new.
-	 * 
-	 * @return Object of SecureHelper class.
-	 */
-	/*
-	 * public static SecureHelper getInstance(){ if(secHelper == null ||
-	 * !(secHelper instanceof SecureHelper)){ secHelper = new SecureHelper(); }
-	 * return secHelper; }
-	 */
-
-	/**
 	 * Generation of AES key.
 	 * 
 	 * @param algo
 	 *            : Name of the Algorithm.
 	 * @return None.
 	 */
+	@SuppressLint("TrulyRandom")
 	private void generateKey(String algo) {
 		try {
 			// Get the KeyGenerator
@@ -140,13 +126,17 @@ public final class SecureHelper {
 	 * @return None.
 	 */
 	protected void generateKeyStore(String algorithm, String aliasName, String name, char[] password) {
+		FileOutputStream fileOutputStream = null;
+
 		try {
 			generateKey(algorithm);
 			keyStore.load(null, password);
 			storeKey(aliasName, password);
+
 			if (fileOutputStream == null) {
 				fileOutputStream = context.openFileOutput(name, 0);
 			}
+
 			keyStore.store(fileOutputStream, password);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,7 +145,6 @@ public final class SecureHelper {
 				try {
 					fileOutputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -184,7 +173,7 @@ public final class SecureHelper {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+
 		} finally {
 			if (fileInputStream != null) {
 				try {
@@ -303,11 +292,10 @@ public final class SecureHelper {
 	 * Returns the random generated password.
 	 * 
 	 * @param None
-	 *            .
+	 * 
 	 * @return Alpha numeric string.
 	 */
 	private String generateRandomNumber() {
-		/* return Long.toHexString(Double.doubleToLongBits(Math.random())); */
 		return Long.toHexString(new SecureRandom().nextLong());
 	}
 
@@ -341,20 +329,24 @@ public final class SecureHelper {
 	 * 
 	 * @return random number character array
 	 */
-
 	protected char[] getStoredRandomNumber() {
 		char[] storeRandomNumber = null;
 		SharedPreferences sharedPreferences = null;
 		SharedPreferences.Editor editor = null;
-		String sharedPrefPassword = null;
+		String sharedPrefRandomNoStr = null;
 		String randomNumber = null;
+
 		try {
 			sharedPreferences = context.getSharedPreferences(FILE_NAME_RANDOM_NO, Context.MODE_PRIVATE);
-			sharedPrefPassword = sharedPreferences.getString(ALIAS_RANDOM_NO, "");
+			sharedPrefRandomNoStr = sharedPreferences.getString(ALIAS_RANDOM_NO, null);
 
-			if (!TextUtils.isEmpty(sharedPrefPassword)) {
-				storeRandomNumber = sharedPrefPassword.toCharArray();
-			} else {
+			// Set stored random number
+			if (!TextUtils.isEmpty(sharedPrefRandomNoStr)) {
+				storeRandomNumber = sharedPrefRandomNoStr.toCharArray();
+			}
+
+			// Generate new random number
+			else {
 				editor = sharedPreferences.edit();
 				randomNumber = generateRandomNumber();
 				storeRandomNumber = randomNumber.toCharArray();
@@ -371,9 +363,10 @@ public final class SecureHelper {
 		} finally {
 			sharedPreferences = null;
 			editor = null;
-			sharedPrefPassword = null;
+			sharedPrefRandomNoStr = null;
 			randomNumber = null;
 		}
+
 		return storeRandomNumber;
 	}
 
@@ -422,6 +415,7 @@ public final class SecureHelper {
 		String first8Odd = null;
 		String encryptedValue = null;
 		String sha512str = null;
+
 		try {
 			encryptedValue = Base64.encodeToString(randomNumber.getBytes(), Base64.DEFAULT);
 			sha512str = generateSHA512(encryptedValue);
@@ -429,6 +423,7 @@ public final class SecureHelper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		return first8Odd;
 	}
 
@@ -463,6 +458,7 @@ public final class SecureHelper {
 	private void storeIV(String[] ivArray) {
 		SharedPreferences sharedPreferences = null;
 		SharedPreferences.Editor editor = null;
+
 		try {
 			sharedPreferences = context.getSharedPreferences(FILE_NAME_IV, Context.MODE_PRIVATE);
 			editor = sharedPreferences.edit();
@@ -494,12 +490,13 @@ public final class SecureHelper {
 	protected String getIV(int ivNo) {
 		SharedPreferences sharedPreferences = null;
 		String sharedPrefText = null;
+
 		try {
 			int ivInt = (ivNo % 10);
 			sharedPreferences = context.getSharedPreferences(FILE_NAME_IV, Context.MODE_PRIVATE);
 			for (int i = 0; i < TOTAL_NO_OF_IV; i++) {
 				if (ivInt == i) {
-					sharedPrefText = sharedPreferences.getString(KEY_IV + i, "");
+					sharedPrefText = sharedPreferences.getString(KEY_IV + i, null);
 					break;
 				}
 			}
@@ -508,6 +505,7 @@ public final class SecureHelper {
 		} finally {
 			sharedPreferences = null;
 		}
+
 		return sharedPrefText;
 	}
 

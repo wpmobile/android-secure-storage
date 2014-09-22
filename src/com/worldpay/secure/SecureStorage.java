@@ -14,6 +14,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 /**
  * This class is used to provide sensitive data security in android applications
@@ -27,42 +28,39 @@ public final class SecureStorage implements SecureInterface {
 	private static final String KEYSTORE_FILENAME = "Secure.keystore";
 	private static final String KEY_ALIAS_NAME = "";
 	private static final String ALGORITHM = "AES";
-	private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+	private static final String STORAGE_CIPHER = "AES/CBC/PKCS5Padding";
 
 	private char[] keyStorePassword = null;
 	private Cipher cipher = null;
 	private SecretKeySpec secretKeySpec = null;
 	private SecureHelper secureHelper = null;
 
-	public SecureStorage(Context ctx) {
+	public SecureStorage(Context context) {
 		byte[] raw = null;
 		char[] storedRandomNumber = null;
 
 		try {
-			// Instantiate the cipher
-			cipher = Cipher.getInstance(TRANSFORMATION);
-			secureHelper = new SecureHelper(ctx, cipher);
+			cipher = Cipher.getInstance(STORAGE_CIPHER);
+			secureHelper = new SecureHelper(context, cipher);
 
 			storedRandomNumber = secureHelper.getStoredRandomNumber();
 
 			if (storedRandomNumber != null) {
 				keyStorePassword = secureHelper.generatePassword(new String(storedRandomNumber)).toCharArray();
-			} else {
-				return;
-			}
 
-			if (!secureHelper.isKeyStoreExist(KEYSTORE_FILENAME)) {
-				secureHelper.generateKeyStore(ALGORITHM, KEY_ALIAS_NAME, KEYSTORE_FILENAME, keyStorePassword);
-			}
+				if (!secureHelper.isKeyStoreExist(KEYSTORE_FILENAME)) {
+					secureHelper.generateKeyStore(ALGORITHM, KEY_ALIAS_NAME, KEYSTORE_FILENAME, keyStorePassword);
+				}
 
-			// Checking for existence of IV based on shared preference.
-			if (!secureHelper.isIVExist()) {
-				secureHelper.generateIV();
-			}
+				// Checking for existence of IV based on shared preference.
+				if (!secureHelper.isIVExist()) {
+					secureHelper.generateIV();
+				}
 
-			// Generate the secret key spec
-			raw = secureHelper.getKey(KEY_ALIAS_NAME, keyStorePassword, KEYSTORE_FILENAME).getEncoded();
-			secretKeySpec = new SecretKeySpec(raw, ALGORITHM);
+				// Generate the secret key spec
+				raw = secureHelper.getKey(KEY_ALIAS_NAME, keyStorePassword, KEYSTORE_FILENAME).getEncoded();
+				secretKeySpec = new SecretKeySpec(raw, ALGORITHM);
+			}
 
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -124,14 +122,14 @@ public final class SecureStorage implements SecureInterface {
 		IvParameterSpec ivParam = null;
 
 		try {
-			String ivFromSP = secureHelper.getIV(ivInt);
-			fromHextoByteArray = secureHelper.hexStringToByteArray(ivFromSP);
+			String initVectorFromPrefs = secureHelper.getIV(ivInt);
+			fromHextoByteArray = secureHelper.hexStringToByteArray(initVectorFromPrefs);
 
 			if (fromHextoByteArray != null) {
 				ivParam = new IvParameterSpec(fromHextoByteArray);
 				cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParam);
 
-				if (text != null && text.toString().trim().length() > 0) {
+				if (!TextUtils.isEmpty(text)) {
 					encryptedEncodedBytes = cipher.doFinal(text.getBytes());
 					return secureHelper.byteArrayToHexString(encryptedEncodedBytes);
 				} else {
@@ -180,12 +178,14 @@ public final class SecureStorage implements SecureInterface {
 			if (fromHextoByteArray != null) {
 				ivParam = new IvParameterSpec(fromHextoByteArray);
 				cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParam);
+
 				if (text != null && text.toString().trim().length() > 0) {
 					decodedBytes = cipher.doFinal(secureHelper.hexStringToByteArray(text));
 					return new String(decodedBytes);
-				} else {
-					throw new IllegalArgumentException("Encrypted text cannot be blank");
 				}
+
+				throw new IllegalArgumentException("Encrypted text cannot be blank");
+
 			} else {
 				throw new IllegalArgumentException("Random number for initialization vector is not found");
 			}
