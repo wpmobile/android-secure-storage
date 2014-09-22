@@ -1,0 +1,17 @@
+Release Notes
+
+************************************************************************
+** Version 1.0.1
+************************************************************************
+
+- Cleaned code up.
+- Added release notes
+- Added eclipse code formatter
+- Added checkstyle rules
+- Added pom.xml for maven building and publishing.
+
+************************************************************************
+** Version 1.0.0
+************************************************************************
+
+- Initial release

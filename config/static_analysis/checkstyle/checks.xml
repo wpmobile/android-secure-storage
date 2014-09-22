@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker" >
+
+    <property
+        name="severity"
+        value="error" />
+    <!-- Filter out Checkstyle warnings that have been suppressed with the @SuppressWarnings annotation -->
+
+    <module name="SuppressWarningsFilter" />
+
+    <module name="TreeWalker" >
+
+        <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
+
+        <module name="SuppressWarningsHolder" />
+
+        <module name="JavadocStyle" />
+
+        <module name="ConstantName" />
+
+        <module name="LocalFinalVariableName" />
+
+        <module name="LocalVariableName" />
+
+        <module name="MethodName" />
+
+        <module name="PackageName" />
+
+        <module name="ParameterName" />
+
+        <module name="StaticVariableName" >
+
+            <metadata
+                name="net.sf.eclipsecs.core.comment"
+                value="No hungarian notation here" />
+
+            <property
+                name="format"
+                value="^[a-z]{2,}[a-zA-Z0-9]*$" />
+        </module>
+
+        <module name="TypeName" />
+
+        <module name="MemberName" >
+
+            <metadata
+                name="net.sf.eclipsecs.core.comment"
+                value="No hungarian notation here" />
+
+            <property
+                name="format"
+                value="^[a-z]{2,}[a-zA-Z0-9]*$" />
+        </module>
+
+        <module name="UpperEll" />
+
+        <module name="AvoidStarImport" />
+
+        <module name="IllegalImport" />
+
+        <module name="RedundantImport" />
+        <!-- <module name="UnusedImports" /> -->
+
+        <module name="MethodLength" >
+
+            <property
+                name="max"
+                value="800" />
+        </module>
+
+        <module name="ParameterNumber" >
+
+            <property
+                name="id"
+                value="maxParameterNumber" />
+
+            <property
+                name="max"
+                value="25" />
+
+            <property
+                name="tokens"
+                value="METHOD_DEF" />
+        </module>
+
+        <module name="EmptyForIteratorPad" />
+
+        <module name="MethodParamPad" />
+
+        <module name="NoWhitespaceAfter" >
+
+            <property
+                name="tokens"
+                value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS" />
+        </module>
+
+        <module name="NoWhitespaceBefore" />
+
+        <module name="InnerTypeLast" />
+
+        <module name="ParenPad" />
+
+        <module name="TypecastParenPad" />
+
+        <module name="WhitespaceAfter" />
+
+        <module name="WhitespaceAround" />
+
+        <module name="ModifierOrder" />
+
+        <module name="RedundantModifier" />
+
+        <module name="AvoidNestedBlocks" />
+
+        <module name="EmptyBlock" />
+
+        <module name="LeftCurly" />
+
+        <module name="NeedBraces" />
+
+        <module name="FinalClass" />
+
+        <module name="EqualsAvoidNull" />
+
+        <module name="EmptyStatement" />
+
+        <module name="DeclarationOrder" />
+
+        <module name="HideUtilityClassConstructor" />
+
+        <module name="HiddenField" >
+
+            <property
+                name="ignoreConstructorParameter"
+                value="true" />
+
+            <property
+                name="ignoreSetter"
+                value="true" />
+        </module>
+
+        <module name="IllegalInstantiation" />
+
+        <module name="TodoComment" >
+
+            <property
+                name="severity"
+                value="ignore" />
+
+            <metadata
+                name="net.sf.eclipsecs.core.lastEnabledSeverity"
+                value="inherit" />
+        </module>
+
+        <module name="MissingSwitchDefault" />
+
+        <module name="RedundantThrows" >
+
+            <property
+                name="logLoadErrors"
+                value="true" />
+
+            <property
+                name="suppressLoadErrors"
+                value="true" />
+        </module>
+
+        <module name="SimplifyBooleanExpression" />
+
+        <module name="SimplifyBooleanReturn" />
+
+        <module name="InterfaceIsType" />
+
+        <module name="VisibilityModifier" >
+
+            <property
+                name="packageAllowed"
+                value="true" />
+
+            <property
+                name="protectedAllowed"
+                value="true" />
+        </module>
+
+        <module name="ArrayTypeStyle" />
+    </module>
+
+</module>
