@@ -4,7 +4,8 @@ Release Notes
 ** Version 1.0.1
 ************************************************************************
 
-- Implemented clean method to clear and reset the secur store.
+- Implemented clean method to clear and reset the secure store.
+- Updated method scope on methods that shouldn't be exposed.
 - Added simplified encrypt/decrypt methods. 
 - Added release notes
 - Added eclipse code formatter
