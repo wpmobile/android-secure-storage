@@ -4,11 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.worldpay</groupId>
-	<artifactId>secure-storage-android</artifactId>
+	<artifactId>secure-storage-android-parent</artifactId>
 	<version>1.0.0</version>
-	<packaging>jar</packaging>
-	<name>Secure Storage Library</name>
+	<packaging>pom</packaging>
+	<name>Secure Storage Parent</name>
 
+	<modules>
+	    <module>library</module>
+	</modules>
+	
 	<organization>
 		<name>World Pay</name>
 		<url>http://www.worldpay.co.uk/</url>
@@ -18,100 +22,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.6</java.version>
 		<android.version>4.4.2</android.version>
-		<sdk.platform>19</sdk.platform>
-		<android.maven.plugin>3.9.0-rc.2</android.maven.plugin>
+		<sdk.platform>20</sdk.platform>
+		<android.maven.plugin>4.0.0-rc.1</android.maven.plugin>
 		<checkstyle.config.location>config/static_analysis/checkstyle/checks.xml</checkstyle.config.location>
 	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android</artifactId>
-			<version>${android.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.12.1</version>
-				<executions>
-					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
-						<configuration>
-							<encoding>UTF-8</encoding>
-							<consoleOutput>true</consoleOutput>
-							<failsOnError>true</failsOnError>
-							<linkXRef>false</linkXRef>
-						</configuration>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
-				<artifactId>android-maven-plugin</artifactId>
-				<version>${android.maven.plugin}</version>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
-				<artifactId>android-maven-plugin</artifactId>
-				<version>${android.maven.plugin}</version>
-				<executions>
-					<execution>
-						<id>lint</id>
-						<goals>
-							<goal>lint</goal>
-						</goals>
-						<phase>validate</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<sdk>
-						<platform>${sdk.platform}</platform>
-					</sdk>
-					<lint>
-						<skip>false</skip>
-						<failOnError>true</failOnError>
-						<enableHtml>true</enableHtml>
-						<simpleHtmlOutputPath>${project.build.directory}/lint-results/lint-results-simple-html
-						</simpleHtmlOutputPath>
-					</lint>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>wpproducts</id>
-			<name>wpproducts-releases</name>
-			<url>http://wpproducts.artifactoryonline.com/wpproducts/ext-releases-local
-			</url>
-		</repository>
-		<snapshotRepository>
-			<id>wpproducts</id>
-			<name>wpproducts-snapshots</name>
-			<url>http://wpproducts.artifactoryonline.com/wpproducts/ext-snapshots-local
-			</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 </project>

@@ -4,11 +4,13 @@ Release Notes
 ** Version 1.0.1
 ************************************************************************
 
-- Cleaned code up.
+- Implemented clean method to clear and reset the secur store.
+- Added simplified encrypt/decrypt methods. 
 - Added release notes
 - Added eclipse code formatter
 - Added checkstyle rules
 - Added pom.xml for maven building and publishing.
+- Cleaned code up.
 
 ************************************************************************
 ** Version 1.0.0
